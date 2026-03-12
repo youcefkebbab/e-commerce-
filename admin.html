@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Sport Corner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00C853;
+      --green-dark: #00A040;
+      --black: #1A1A1A;
+      --dark: #242424;
+      --sidebar: #1e1e1e;
+      --white: #fff;
+      --bg: #f4f6f8;
+      --card: #fff;
+      --border: #e8eaed;
+      --text: #333;
+      --muted: #888;
+      --radius: 12px;
+      --danger: #e53935;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen {
+      min-height: 100vh;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--dark);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #333;
+      text-align: center;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .login-logo img { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; }
+
+    .login-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 24px;
+      color: var(--white);
+    }
+
+    .login-brand span { color: var(--green); }
+
+    .login-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 36px;
+      margin-top: 4px;
+    }
+
+    .login-card h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .form-group { margin-bottom: 16px; text-align: left; }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--green);
+    }
+
+    .form-group select option { background: #2a2a2a; }
+
+    .login-error {
+      color: #ff6b6b;
+      font-size: 13px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--green);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover { background: #00e060; }
+
+    /* DASHBOARD */
+    #dashboard { display: none; min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar {
+      background: var(--black);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--white);
+    }
+
+    .topbar-logo span { color: var(--green); }
+
+    .topbar-badge {
+      background: rgba(0,200,83,0.15);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,200,83,0.3);
+      letter-spacing: 1px;
+    }
+
+    .topbar-right { display: flex; gap: 12px; align-items: center; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #444;
+      color: #ccc;
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* MAIN */
+    .dash-main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.green { background: rgba(0,200,83,0.12); }
+    .stat-icon.blue { background: rgba(37,99,235,0.1); }
+    .stat-icon.orange { background: rgba(234,88,12,0.1); }
+
+    .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; color: var(--black); line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* PANELS */
+    .panels { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--black);
+    }
+
+    .panel-body { padding: 20px; }
+
+    /* FORM */
+    .admin-form .form-group label { color: var(--muted); }
+
+    .admin-form .form-group input,
+    .admin-form .form-group select,
+    .admin-form .form-group textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .admin-form .form-group input:focus,
+    .admin-form .form-group select:focus,
+    .admin-form .form-group textarea:focus { border-color: var(--green); }
+
+    .admin-form .form-group select option { background: var(--white); color: var(--text); }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--green);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn-submit:hover { background: var(--green-dark); }
+
+    .btn-cancel {
+      width: 100%;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
+
+    .form-success {
+      background: rgba(0,200,83,0.1);
+      border: 1px solid rgba(0,200,83,0.3);
+      color: var(--green-dark);
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* PRODUCT TABLE */
+    .product-table { width: 100%; border-collapse: collapse; }
+
+    .product-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .product-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    .product-table tr:last-child td { border-bottom: none; }
+
+    .product-table tr:hover td { background: var(--bg); }
+
+    .prod-thumb {
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .prod-name { font-weight: 600; color: var(--black); }
+    .prod-price { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 16px; color: var(--green-dark); }
+    .prod-cat {
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .actions { display: flex; gap: 6px; }
+
+    .btn-edit, .btn-delete {
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-edit { background: rgba(37,99,235,0.1); color: #1d4ed8; }
+    .btn-edit:hover { background: rgba(37,99,235,0.2); }
+
+    .btn-delete { background: rgba(229,57,53,0.1); color: var(--danger); }
+    .btn-delete:hover { background: rgba(229,57,53,0.2); }
+
+    .empty-table {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* SEARCH BAR */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-input {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Barlow', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      width: 200px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus { border-color: var(--green); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--black);
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .panels { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .dash-main { padding: 20px 16px; }
+      .topbar { padding: 0 16px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .product-table th:nth-child(3),
+      .product-table td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="logo.JPG" alt="Logo">
+      <div class="login-brand">SPORT <span>CORNER</span></div>
+    </div>
+    <div class="login-sub">Tableau de bord administrateur</div>
+    <h2>Connexion</h2>
+
+    <div id="login-error" class="login-error">Identifiants incorrects. Réessayez.</div>
+
+    <div class="form-group">
+      <label>Nom d'utilisateur</label>
+      <input type="text" id="username" placeholder="admin" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">SE CONNECTER</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">SPORT <span>CORNER</span></div>
+      <span class="topbar-badge">ADMIN</span>
+    </div>
+    <div class="topbar-right">
+      <a href="index.html" class="btn-outline" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Voir la boutique
+      </a>
+      <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon green">📦</div>
+        <div>
+          <div class="stat-num" id="stat-total">0</div>
+          <div class="stat-label">Produits total</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue">🏷️</div>
+        <div>
+          <div class="stat-num" id="stat-cats">0</div>
+          <div class="stat-label">Catégories</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">💰</div>
+        <div>
+          <div class="stat-num" id="stat-avg">0</div>
+          <div class="stat-label">Prix moyen (DZD)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANELS -->
+    <div class="panels">
+      <!-- ADD FORM -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title" id="form-panel-title">Ajouter un produit</span>
+        </div>
+        <div class="panel-body">
+          <div class="admin-form">
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+              <label>Nom du produit *</label>
+              <input type="text" id="f-name" placeholder="Ex: Nike Air Max 2024">
+            </div>
+            <div class="form-group">
+              <label>Prix (DZD) *</label>
+              <input type="number" id="f-price" placeholder="Ex: 5000" min="0">
+            </div>
+            <div class="form-group">
+              <label>Catégorie</label>
+              <select id="f-category">
+                <option value="Chaussures">Chaussures</option>
+                <option value="Maillots">Maillots</option>
+                <option value="Ballons">Ballons</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Vêtements">Vêtements</option>
+                <option value="Accessoires">Accessoires</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>URL de l'image</label>
+              <input type="url" id="f-image" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label>Badge (optionnel)</label>
+              <input type="text" id="f-badge" placeholder="Ex: Nouveau, Promo, Populaire">
+            </div>
+            <button class="btn-submit" id="btn-submit" onclick="saveProduct()">AJOUTER LE PRODUIT</button>
+            <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()" style="display:none">Annuler</button>
+            <div class="form-success" id="form-success">✓ Produit enregistré avec succès !</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT LIST -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Liste des produits</span>
+          <div class="search-bar">
+            <input type="text" class="search-input" id="search-input" placeholder="Rechercher..." oninput="renderTable()">
+          </div>
+        </div>
+        <div class="panel-body" style="padding:0; overflow-x:auto;">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th style="width:52px;">Image</th>
+                <th>Produit</th>
+                <th>Catégorie</th>
+                <th>Prix</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-card">
+    <div class="modal-title">Supprimer ce produit ?</div>
+    <p style="color:#666;font-size:14px;margin-bottom:24px;">Cette action est irréversible.</p>
+    <div style="display:flex;gap:12px;">
+      <button class="btn-submit" style="background:var(--danger);color:#fff;" onclick="confirmDelete()">SUPPRIMER</button>
+      <button class="btn-cancel" style="margin:0;flex:1;" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- AUTH ----
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'sportcorner2019';
+
+function doLogin() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    ensureDefaults();
+    renderAll();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password').value = '';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+});
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+}
+
+// ---- STORAGE ----
+const DEFAULT_PRODUCTS = [
+  { id: 1, name: "Adidas Predator Elite", price: 8500, category: "Chaussures", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", badge: "Populaire" },
+  { id: 2, name: "Maillot FC Barcelona 2024", price: 3500, category: "Maillots", image: "https://images.unsplash.com/photo-1519766304817-4f37bda74a26?w=400&q=80", badge: "Nouveau" },
+  { id: 3, name: "Ballon Nike Premier League", price: 2200, category: "Ballons", image: "https://images.unsplash.com/photo-1552318965-6e6be7484ada?w=400&q=80", badge: null },
+  { id: 4, name: "Haltères Pro Set 20kg", price: 6800, category: "Fitness", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80", badge: "Promo" },
+  { id: 5, name: "Nike Air Zoom Pegasus", price: 9200, category: "Chaussures", image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&q=80", badge: null },
+  { id: 6, name: "Survêtement Puma Training", price: 4500, category: "Vêtements", image: "https://images.unsplash.com/photo-1556906781-9a412961a28c?w=400&q=80", badge: "Nouveau" },
+  { id: 7, name: "Corde à Sauter Speed", price: 850, category: "Fitness", image: "https://images.unsplash.com/photo-1434596922112-19c563067271?w=400&q=80", badge: null },
+  { id: 8, name: "Gants de Gardien Reusch", price: 3200, category: "Accessoires", image: "https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=400&q=80", badge: null }
+];
+
+function ensureDefaults() {
+  if (!localStorage.getItem('sc_products')) {
+    localStorage.setItem('sc_products', JSON.stringify(DEFAULT_PRODUCTS));
+  }
+}
+
+function getProducts() {
+  return JSON.parse(localStorage.getItem('sc_products') || '[]');
+}
+
+function saveProducts(products) {
+  localStorage.setItem('sc_products', JSON.stringify(products));
+}
+
+// ---- STATS ----
+function renderStats() {
+  const products = getProducts();
+  document.getElementById('stat-total').textContent = products.length;
+  const cats = new Set(products.map(p => p.category).filter(Boolean));
+  document.getElementById('stat-cats').textContent = cats.size;
+  const avg = products.length ? Math.round(products.reduce((s, p) => s + Number(p.price), 0) / products.length) : 0;
+  document.getElementById('stat-avg').textContent = avg.toLocaleString('fr-DZ');
+}
+
+// ---- TABLE ----
+function renderTable() {
+  const products = getProducts();
+  const q = (document.getElementById('search-input').value || '').toLowerCase();
+  const filtered = q ? products.filter(p => p.name.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q)) : products;
+  const tbody = document.getElementById('products-tbody');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty-table">Aucun produit trouvé.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(p => `
+    <tr>
+      <td>
+        <img class="prod-thumb"
+          src="${p.image || ''}"
+          onerror="this.src='https://images.unsplash.com/photo-1517649763962-0c623066013b?w=100&q=60'"
+          alt="${p.name}">
+      </td>
+      <td>
+        <div class="prod-name">${p.name}</div>
+        ${p.badge ? `<div style="font-size:11px;color:var(--green-dark);margin-top:2px;">${p.badge}</div>` : ''}
+      </td>
+      <td><span class="prod-cat">${p.category || '—'}</span></td>
+      <td><span class="prod-price">${Number(p.price).toLocaleString('fr-DZ')} DZD</span></td>
+      <td>
+        <div class="actions">
+          <button class="btn-edit" onclick="editProduct(${p.id})">Modifier</button>
+          <button class="btn-delete" onclick="promptDelete(${p.id})">Supprimer</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderAll() { renderStats(); renderTable(); }
+
+// ---- ADD / EDIT ----
+function saveProduct() {
+  const name = document.getElementById('f-name').value.trim();
+  const price = document.getElementById('f-price').value;
+  if (!name || !price) { alert('Le nom et le prix sont obligatoires.'); return; }
+
+  const products = getProducts();
+  const editId = document.getElementById('edit-id').value;
+
+  if (editId) {
+    const idx = products.findIndex(p => p.id == editId);
+    if (idx !== -1) {
+      products[idx] = {
+        ...products[idx],
+        name,
+        price: Number(price),
+        category: document.getElementById('f-category').value,
+        image: document.getElementById('f-image').value.trim(),
+        badge: document.getElementById('f-badge').value.trim() || null
+      };
+    }
+  } else {
+    const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    products.push({
+      id: newId,
+      name,
+      price: Number(price),
+      category: document.getElementById('f-category').value,
+      image: document.getElementById('f-image').value.trim(),
+      badge: document.getElementById('f-badge').value.trim() || null
+    });
+  }
+
+  saveProducts(products);
+  showSuccess();
+  resetForm();
+  renderAll();
+}
+
+function editProduct(id) {
+  const products = getProducts();
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('edit-id').value = p.id;
+  document.getElementById('f-name').value = p.name;
+  document.getElementById('f-price').value = p.price;
+  document.getElementById('f-category').value = p.category || 'Autre';
+  document.getElementById('f-image').value = p.image || '';
+  document.getElementById('f-badge').value = p.badge || '';
+  document.getElementById('form-panel-title').textContent = 'Modifier le produit';
+  document.getElementById('btn-submit').textContent = 'ENREGISTRER';
+  document.getElementById('btn-cancel').style.display = 'block';
+  document.getElementById('form-success').style.display = 'none';
+
+  document.querySelector('.panel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelEdit() { resetForm(); }
+
+function resetForm() {
+  document.getElementById('edit-id').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-category').value = 'Chaussures';
+  document.getElementById('f-image').value = '';
+  document.getElementById('f-badge').value = '';
+  document.getElementById('form-panel-title').textContent = 'Ajouter un produit';
+  document.getElementById('btn-submit').textContent = 'AJOUTER LE PRODUIT';
+  document.getElementById('btn-cancel').style.display = 'none';
+}
+
+function showSuccess() {
+  const el = document.getElementById('form-success');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2500);
+}
+
+// ---- DELETE ----
+let pendingDeleteId = null;
+
+function promptDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('delete-modal').classList.add('open');
+}
+
+function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const products = getProducts().filter(p => p.id !== pendingDeleteId);
+  saveProducts(products);
+  pendingDeleteId = null;
+  closeModal();
+  renderAll();
+}
+
+function closeModal() {
+  document.getElementById('delete-modal').classList.remove('open');
+  pendingDeleteId = null;
+}
+
+document.getElementById('delete-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('delete-modal')) closeModal();
+});
+</script>
+</body>
+</html>
