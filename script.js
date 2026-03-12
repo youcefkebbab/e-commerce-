@@ -114,7 +114,7 @@ function renderProducts(filter) {
 
 function buildWALink(name, price) {
   const msg = encodeURIComponent(`Bonjour Sport Corner, je veux commander ce produit : ${name} - ${Number(price).toLocaleString('fr-DZ')} DZD`);
-  return `https://wa.me/213540543342?text=${msg}`;
+  return `https://wa.me/213778569600?text=${msg}`;
 }
 
 // ---- CATEGORY FILTER ----
