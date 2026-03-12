@@ -13,11 +13,6 @@ sport-corner/
 └── logo.JPG     # Logo
 ```
 
-## Admin Login
-
-| Username | Password          |
-|----------|-------------------|
-| `admin`  | `sportcorner2019` |
 
 ## WhatsApp Number
 
