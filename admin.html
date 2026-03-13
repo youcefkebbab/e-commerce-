@@ -478,6 +478,53 @@
       .product-table th:nth-child(3),
       .product-table td:nth-child(3) { display: none; }
     }
+
+    /* UPLOAD ZONE */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--bg);
+      position: relative;
+      min-height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .upload-zone:hover { border-color: var(--green); background: rgba(0,200,83,0.04); }
+    .upload-zone:active { background: rgba(0,200,83,0.08); }
+    .upload-icon { font-size: 28px; margin-bottom: 6px; }
+    .upload-text { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .upload-hint { font-size: 11px; color: var(--muted); }
+    .upload-preview { position: relative; width: 100%; }
+    .upload-preview img {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+    .upload-remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .upload-remove:hover { background: var(--danger); }
   </style>
 </head>
 <body>
@@ -580,8 +627,20 @@
               </select>
             </div>
             <div class="form-group">
-              <label>URL de l'image</label>
-              <input type="url" id="f-image" placeholder="https://...">
+              <label>Image du produit</label>
+              <div class="upload-zone" id="upload-zone" onclick="document.getElementById('f-image-file').click()">
+                <div class="upload-preview" id="upload-preview" style="display:none;">
+                  <img id="preview-img" src="" alt="Apercu">
+                  <button type="button" class="upload-remove" onclick="removeImage(event)">&#x2715;</button>
+                </div>
+                <div class="upload-placeholder" id="upload-placeholder">
+                  <div class="upload-icon">&#128247;</div>
+                  <div class="upload-text">Appuyer pour choisir une photo</div>
+                  <div class="upload-hint">Depuis la galerie ou l'appareil photo</div>
+                </div>
+              </div>
+              <input type="file" id="f-image-file" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+              <input type="hidden" id="f-image">
             </div>
             <div class="form-group">
               <label>Badge (optionnel)</label>
@@ -634,6 +693,48 @@
 </div>
 
 <script>
+
+// ---- IMAGE UPLOAD ----
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Warn if file is very large
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Image trop grande (max 5MB). Veuillez choisir une image plus petite.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64 = e.target.result;
+    document.getElementById('f-image').value = base64;
+    document.getElementById('preview-img').src = base64;
+    document.getElementById('upload-preview').style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(event) {
+  event.stopPropagation();
+  document.getElementById('f-image').value = '';
+  document.getElementById('preview-img').src = '';
+  document.getElementById('f-image-file').value = '';
+  document.getElementById('upload-preview').style.display = 'none';
+  document.getElementById('upload-placeholder').style.display = 'block';
+}
+
+function setImagePreview(src) {
+  if (src) {
+    document.getElementById('f-image').value = src;
+    document.getElementById('preview-img').src = src;
+    document.getElementById('upload-preview').style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+  } else {
+    removeImage({ stopPropagation: () => {} });
+  }
+}
 // ---- AUTH ----
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'sportcorner2019';
@@ -785,7 +886,7 @@ function editProduct(id) {
   document.getElementById('f-name').value = p.name;
   document.getElementById('f-price').value = p.price;
   document.getElementById('f-category').value = p.category || 'Autre';
-  document.getElementById('f-image').value = p.image || '';
+  setImagePreview(p.image || '');
   document.getElementById('f-badge').value = p.badge || '';
   document.getElementById('form-panel-title').textContent = 'Modifier le produit';
   document.getElementById('btn-submit').textContent = 'ENREGISTRER';
@@ -802,7 +903,7 @@ function resetForm() {
   document.getElementById('f-name').value = '';
   document.getElementById('f-price').value = '';
   document.getElementById('f-category').value = 'Chaussures';
-  document.getElementById('f-image').value = '';
+  removeImage({ stopPropagation: () => {} });
   document.getElementById('f-badge').value = '';
   document.getElementById('form-panel-title').textContent = 'Ajouter un produit';
   document.getElementById('btn-submit').textContent = 'AJOUTER LE PRODUIT';
