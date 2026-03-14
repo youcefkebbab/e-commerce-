@@ -14,17 +14,7 @@ sport-corner/
 ```
 
 
-## WhatsApp Number
 
-`+213 540 543 342` — change it in `script.js`:
-```js
-return `https://wa.me/213540543342?text=${msg}`;
-```
 
-## Deploy
-
-Drag the folder to [netlify.com](https://netlify.com) — free & instant.
-
----
 
 **Sport Corner · El Eulma, Sétif, Algérie 🇩🇿**
